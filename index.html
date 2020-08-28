@@ -1,0 +1,3314 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Show and hide layers</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js"></script>
+<script src='https://code.jquery.com/jquery-1.11.0.min.js'></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css" rel="stylesheet" />
+<style>
+	body { margin: 0; padding: 0; }
+	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+<style>
+    #menu {
+        background: #fff;
+        position: absolute;
+        z-index: 1;
+        top: 10px;
+        right: 10px;
+        border-radius: 1px;
+        width: 170px;
+       
+        font-family: 'Open Sans', sans-serif;
+    }
+
+    #menu a {
+        font-size:11.5px;
+        color: #404040;
+        display: block;
+        margin: 0;
+        padding: 0;
+        padding: 10px;
+        text-decoration: none;
+        
+        text-align: center;
+    }
+
+    #menu a:last-child {
+        border: none;
+    }
+
+    #menu a:hover {
+        background-color: #f8f8f8;
+        color: #404040;
+    }
+
+    #menu a.active {
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    #menu a.active:hover {
+        background: #000000;
+        color:#ffffff;
+    }
+
+
+      .marker1 {
+        background-image: url("https://freight.cargo.site/t/original/i/3a971320a5c59c80ae85d2732f477e15852dc7aa9423ec87c0f737bd70667747/cross-maker-01.png");
+        background-size: cover;
+        width: 20px;
+        height: 20px;
+        border-radius: 30%;
+        cursor: pointer;
+        
+      }
+
+      .mapboxgl-popup {
+        max-width: 200px;
+      }
+
+      .mapboxgl-popup-content {
+        text-align: center;
+        font-family: "Open Sans", sans-serif;
+        
+        
+       
+      }
+      #bottom {
+        position:absolute;
+bottom:0;
+left:100px;
+text-align:center;
+font-size:11.5px;
+
+      }
+</style>
+
+<nav id="menu">
+  <a href='#' id='active' data-filter='all'>Show all</a>
+  <a href='#' data-filter=''><b><i>PARADIGM</i></b>  </a>
+  
+  <a href='#' data-filter='resilience'>resilience</a>
+  <a href='#' data-filter='adaptation'>adaptation</a>
+  <a href='#' data-filter='mitigation'>mitigation</a>
+  <a href='#' data-filter=''><b><i>PROJECT THEME</i></b></a>
+  <a href='#' data-filter='coastal lands'>coastal lands</a>
+  <a href='#' data-filter='water conservation'>water conservation</a>
+  <a href='#' data-filter='agriculture by climate'>agriculture by climate</a>
+  <a href='#' data-filter='waste reduction'>waste reduction</a>
+  <a href='#' data-filter='freshwater flooding'>freshwater flooding</a>
+  <a href='#' data-filter='arboriculture'>arboriculture</a>
+  <a href='#' data-filter='low carbon urbanization'>low carbon urbanization</a>
+  <a href='#' data-filter='soil stabilization'>soil stabilization</a>
+  <a href='#' data-filter=''><b><i>MAP LAYERS</i></b></a>
+ 
+ 
+
+</nav>
+<div id="map"> 
+<div id="bottom"><p><b>*Please click to toggle on and off layers and refer to the Atlas tab for maps with keys and legends.</b> </p></div>
+
+<script>
+
+
+var places = {
+        'type': 'FeatureCollection',
+        'features': [
+              {
+                type: "Feature",
+                properties: {
+                  title: "Climate Ready Boston",
+                  description:
+                    "Coastal Lands <br> Resilience <br> Boston, MA <br> STOSS Landscape Urbanism, Western and Sampson, Sasaki Associates <br>",
+                     image: "https://freight.cargo.site/t/original/i/15fea02cb3c94b7343b8b5606ab5f9b358852f4294dacd506eee9a777968a4c3/Climate-Ready-Boston.jpg"  ,
+                     resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+
+                    
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-71.056406, 42.357088]
+                }
+              
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Mass Audubon Tidmarsh Wildlife Sanctuary",
+                  description:
+                    "Freshwater Flooding <br> Adaptation <br> Plymouth, MA <br> Massachusetts Audubon Society, MIT Media Lab Responsive Environments Group <br>",
+                    image:"https://freight.cargo.site/t/original/i/41760c6d517de4f46aec7ba055e8979e1b64cd6f7facad8d58f3d2ff012f2ea5/Mass-Audubon-Tidmarsh-Wildlife-Sanctuary.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-70.577860, 41.914724]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Charles River Flood Control Program",
+                  description:
+                    "Freshwater Flooding <br>Resilience <br>Boston, Cambridge, Somerville, MA<br> USACE<br>",
+                    image:"https://freight.cargo.site/t/original/i/653d5b902b2f2d809b64bfa1c72f391c47345f73e1cae87bce55d5fe9a6bc5ce/Charles-River-Flood-Control-Program-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                    
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-71.114111,  42.35469]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Changes to the Land",
+                  description:
+                    "Arboriculture <br>Adaptation <br>New England, USA<br>Harvard Forest<br>",
+                    image:"https://freight.cargo.site/t/original/i/b75b88e84fb5e40ece293446f4c64ba4ae5eeb5d849bcfc3e0ac7f2082def977/Changes-to-the-Land2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-70.822648,  43.965388]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Mayaguez Parque del Litoral",
+                  description: "Coastal Lands <br>Resilience <br>Mayaguez, Puerto Rico, USA<br>Local Office Landscape Architecture and Urban Design <br>",
+                  image:"https://freight.cargo.site/t/original/i/87069719d270b6b1bb2c799e7564f4f64c6ee05eaca6eedde0f419caac48bf6c/Mayaguez-Parque-del-Litoral3.jpg",
+                  resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-67.153327,  18.207213]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Living Breakwaters",
+                  description:
+                    "Coastal Lands <br>Resilience <br>Staten Island, NY, USA<br>SCAPE<br>",
+                    image:"https://freight.cargo.site/t/original/i/43cf386816ed2fb3778e5ef5569404e30ee42c745d0fdf8279ffabb1ef4f1fc8/Living-Breakwaters2-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-74.150201,  40.579532]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Isle de Jean Charles",
+                  description:
+                    "Coastal Lands <br>Adaptation <br>Isle de Jean Charles, USA<br>Isle de Jean Charles Tribe<br>",
+                    image:"https://freight.cargo.site/t/original/i/9b38937d59e2159d1da819ce716db42cb56ee957174c38bbef03bc83e75f44f3/Isle-de-Jean-Charles2-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-90.488582, 29.396000]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Big U",
+                  description:
+                    "Coastal Lands <br>Resilience <br>Lower Manhattan, NYC, USA<br>BIG, MNLA, One Urban Design, Office of Resilience + Recovery, Resilient by Design<br>",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-74.014176,  40.701222]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"New Coastline for East Dike",
+                  description:
+                    "Coastal Lands <br>Resilience <br>Shenzhen, China<br>KCAP, FELIXX<br>",
+                    image:"https://freight.cargo.site/t/original/i/abd2e92e8e707e05606666c81245d991efd2f03e69580465fe8363219b4c66a6/New-Coastline-for-East-Dike.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [114.506692, 22.461581]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Storm+Sand+Sea+Strand",
+                  description:
+                    "Coastal Lands <br>Resilience <br>Galveston, TX, USA<br>Studio Outside<br>",
+                    image:"https://freight.cargo.site/t/original/i/d47ccf4efc7b8f0090e08984e8748fe0c547cd7ea73090494c74875d9513c487/Storm-Sand-Sea-Strand-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-94.797696, 29.301348]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Alameda Creek",
+                  description:
+                    "Coastal Lands <br>Adaptation <br>San Francisco Bay, USA<br>SCAPE, Arcadis, Dredge Research Collaborative, Architectural Ecologies Lab<br>",
+                    image:"https://freight.cargo.site/t/original/i/d065c1be1da3046ff505c1efe5cd3ffdb0dcd853fdda0abfa2930c111dd0ed93/Public-Sediment-for-Alameda-Creek2-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-122.073497,  37.494529]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Eko Atlantic",
+                  description:
+                    "Coastal Lands <br>Resilience <br>Lagos, Nigeria<br>City Eko<br>",
+                    image:"https://freight.cargo.site/t/original/i/61bdf44f87fe6ea48efcc264b1e515e32f79e7c6bdae56f5630eece586016f2d/Eko-Atlantic---Great-Wall-of-Lagos-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  3.411985,   6.409760]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Hulhulmale",
+                  description:
+                    "Coastal Lands <br>Adaptation <br>Hulhumale, Maldives<br>Ministry of Construction and Public Works<br>",
+                    image:"https://freight.cargo.site/t/original/i/982b6b036750bb1ed896d8eb6aa471a9a4d4707f78c585aaf2ea252afa929852/Hulhulmale-3-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 73.538799,   4.210649]
+                }
+              },
+
+              {
+                type: "Feature",
+                properties: {
+                  title:"Hat-Lek Coastal Community",
+                  description:
+                    "Coastal Lands <br>Adaptation <br>Hat Lek, Thailand<br>Porous City Network<br>",
+                    image:"https://freight.cargo.site/t/original/i/284d04ef70af371973961b303ae2051ca88399f6fa2b8aef8bae8a42c5a0e615/Hat-Lek-Coastal-Community-3.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'changes to massachusetts': false,
+                     'water conservation':false,
+                     'soil and agriculture by climate':false,
+                     'renewable waste':false,
+                     'inland flood control':false,
+                     'coastal adaptation':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [102.906142,  11.689017]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title:"Coral Gardens",
+                  description: "Coastal Lands <br>Resilience <br>Viti Levu, Fiji<br>Reef Explorer, Namada Village Youth Club<br>",
+                  image:"https://freight.cargo.site/t/original/i/a8f63f32ef83c65a181676ae2e786fb12aeb632404186754d294cf47957adb00/Coral-Gardens.jpg",
+                  resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                   
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [178.011847, -17.848319]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Blue Dunes",
+                  description:
+                    "Coastal Lands <br>Resilience <br>New York City, NY, USA<br>West 8, WXY<br>",
+                    image:"https://freight.cargo.site/t/original/i/4ee543a84ca6794e740c915eb513935177d10d0024d68707029153864b556180/Blue-Dunes-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-74.005973,  40.712774]
+                }
+              },
+            
+              {
+                type: "Feature",
+                properties: {
+                  title: "Staten Island Buyouts",
+                  description:
+                    "Coastal Lands <br>Resilience <br>Staten Island, NY, USA<br>West 8, WXY<br>",
+                    image:"https://freight.cargo.site/t/original/i/21926f3c28f2753b7fb4c4ab11985dc9bec2a4dcf4aa8176a6e089533259c40f/Staten-Island-Buyouts.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-74.150201, 40.579532]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Surrey Coastal Flood Adaptation Strategy",
+                  description:
+                    "Coastal Lands <br>Adaptation<br>Surrey, Canada<br>Surrey City Government<br>",
+                    image:"https://freight.cargo.site/t/original/i/c0d10f6b373dee6d240997442f76dc580b2b56950e4c29378d8020d5a710b3c8/Surrey-Coastal-Flood-Adaptation-Strategy-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': true,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-122.849013,  49.191347]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Urban Oasis Ras Al Khaimah",
+                  description:
+                    "Water Conservation <br>Adaptation<br>Ras al Khaimah, UAE<br>Inside Outside<br>",
+                    image:"https://freight.cargo.site/t/original/i/2ccfb8226d6179f2c4653aadccb33d3177402503f7bab20208d7b258facf78a2/Urban-Oasis2-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 55.976199,  25.800693]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Becoming Xerophile",
+                  description:
+                    "Water Conservation <br>Adaptation<br>Sharjah,UAE<br>Cooking Sections<br>",
+                    image:"https://freight.cargo.site/t/original/i/778a14a89b94fab78864587892726fc5131dd592dd2df5ae7bb0890fb3dda75d/Becoming-Xerophile.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 55.420932, 25.346255]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "La Quebradora Hydraulic Park",
+                  description:
+                    "Water Conservation <br>Resilience<br> Mexico City, Mexico<br>Lorena Castro<br>",
+                    image:"https://freight.cargo.site/t/original/i/2935da25a3bbcdcff0a0ebb7d7ce41be29097a1a4af409c2dda5ec56d294e40d/La-Quebradora-Hydraulic-Park-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-99.033333,  19.316667]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "El Parque del Rio + Acequia Networks",
+                  description:
+                    "Water Conservation <br>Resilience<br>Santa Fe, NM, USA<br>Surroundings Studio<br>",
+                    image:"https://freight.cargo.site/t/original/i/cc0c8fb7342b216ba89933ac1760d2b9b08419bd909fff9fc4a7c1a36254873d/El-Parque-del-Rio---Acequia-Networks3-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-105.943751,  35.675591]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Delhi Stepwell Restoration",
+                  description:
+                    "Water Conservation <br>Resilience<br>Delhi, India<br>Archeological Survey of India<br>",
+                    image:"https://freight.cargo.site/t/original/i/0817c9bf574929adaaa540c1e6ef114ce2e7ffb2c60ffe5eccff4977512a9a57/Delhi-Stepwell-Restoration.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 77.192494,  28.591701]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Los Angeles Turf Conversion",
+                  description:
+                    "Water Conservation <br>Adaptation<br>Los Angeles, CA, USA<br>LA Dept of Water and Power, Los Angeles Beautification Team<br>",
+                    image:"https://freight.cargo.site/t/original/i/c46a3c2b59515d72b0bbfc6122abcaa0d7241c9010be7d9241a5a751fb738bc3/Los-Angeles-Turf-Conversion-Program2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-118.243685,  34.052234]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Reimagining the 2 Freeway",
+                  description:
+                    "Water Conservation <br>Resilience<br>Los Angeles, CA, USA<br>Stoss<br>",
+                    image:"https://freight.cargo.site/t/original/i/241c181dde6cca509be3cce4c8d297b03cf2abcaf90f05184d5c9f7e4c042994/Reimagining-the-2-Freeway.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-118.250331,  33.819156]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "The Australian Garden",
+                  description:
+                    "Water Conservation <br>Adaptation<br>Cranbourne, Victoria, Australia<br>TCL<br>",
+                    image:"https://freight.cargo.site/t/original/i/b071f5d204ec1a756b91f9153ff17af46a6c6647164f84f0ec7589da3d623259/The-Australian-Garden-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [145.279000,-38.105000]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Water Retention Landscapes",
+                  description:
+                    "Water Conservation <br>Resilience<br>Alentejo, Portugal<br>Sepp Holzer (Permaculture) and Bernd Mueller, Tamera Healing Biotope<br>",
+                    image:"https://freight.cargo.site/t/original/i/96b9b51a385952075d0b4ebfdaa13ad46113964d794dbc51f14076bee676f2ee/Tamera-Water-Retention-Landscapes3-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -7.800085, 38.200381]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Salisbury Stormwater Harvesting",
+                  description:
+                    "Water Conservation <br>Adaptation<br>Salisbury, Australia<br>City of Salisbury Municipal Government<br>",
+                    image:"https://freight.cargo.site/t/original/i/12fbe8a9ec3b1fe8fdf25bf79a0d52a8c72979981deb30d0e6f7f247cbbc987b/Salisbury-Stormwater-Harvesting.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [153.034000, -27.551000]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Water Economies/Water Ecologies",
+                  description:
+                    "Water Conservation <br>Adaptation<br>CA<br> The California Natural Resources Agency, the California Department of Water Resources and the California Department of Fish and Wildlife <br>",
+                    image:"https://freight.cargo.site/t/original/i/bb784664fc95ec93bd14317bee2c5bbe4a1c10a2c455ef2ae2a72e5f19e7f154/Water-Ecologies-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-115.843412,  33.328618]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Navajo Nation Water Rights",
+                  description:
+                    "Water Conservation <br>Resilience<br>Navajo Nation<br>Navajo Nation Water Rights Unit<br>",
+                    image:"https://freight.cargo.site/t/original/i/62b0ac4cff1c1192d43207543a649c7aa41c2e89759a996436f91e377702c636/Navajo-Nation-Water-Rights-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-109.188004,  36.067218]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "The Victorian Desalinatoin Project and Ecological Reserve",
+                  description:
+                    "Water Conservation <br>Resilience<br>Wonthaggi, Australia<br>Aspect Studios<br>",
+                    image:"https://freight.cargo.site/t/original/i/9f0ea75a9a92c5ec28addaa9d3352868962468f37362965a742b0ab51daa0a1a/The-Victorian-Desalination-Project-and-Ecological-Reserve.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [144.785154, -37.471305]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Vallerani Micro Water Harvesting",
+                  description:
+                    "Water Conservation <br>Adaptation<br>Badia Region, Jordan<br>ICARDA<br>",
+                    image:"https://freight.cargo.site/t/original/i/203a200f0dd3ad2e641be12dbc3131808429cc2612ac4d3c7eb8770b9af2c14f/Vallerani-Micro-Water-Harvesting-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 36.007380,  31.869612]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Eco-Boulevard",
+                  description:
+                    "Water Conservation <br>Resilience<br>Madrid, Spain<br>Ecosistema Urbano<br>",
+                    image:"https://freight.cargo.site/t/original/i/2ccfb8226d6179f2c4653aadccb33d3177402503f7bab20208d7b258facf78a2/Urban-Oasis2-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -3.703790, 40.416775]
+                }
+              },
+                {
+                type: "Feature",
+                properties: {
+                  title: "KAFD Environs Study",
+                  description:
+                    "Water Conservation <br>Resilience<br>Riyadh, Saudi Arabia<br>Coen + Partners<br>",
+                    image:"https://freight.cargo.site/t/original/i/aec483aefe624db2780bf0a9dc23d673e28934e44b8ae139906824664334d7fd/KAFD-Environs-Study-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':true,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+                                  },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 46.675295, 24.713552]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Las Canadas",
+                  description:
+                    "Agriculture by Climate <br>Mitigation<br>Veracruz, Mexico<br>Tania de Alba, Ricardo Romero<br>",
+                    image:"https://freight.cargo.site/t/original/i/f9485b8d6db4299eda1fb9363557344e7387e7b95d5e15a98f982c13f37683f1/Las-Caadas3-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':true,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-96.972219,  19.144019]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Saguna Rice Technique",
+                  description:
+                    "Agriculture by Climate <br>Mitigation<br>Jaoli Taluka, Maharashtra, India<br>Shekhar Bhadsavale, Emmanuel D'Silva, Saguna Rural Foundation<br>",
+                    image:"https://freight.cargo.site/t/original/i/8c281017f6a499cc68c97ee8f0e048380835e8358cf5b85e5bae632124b20f8c/Saguna-Rice-Technique-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':true,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 76.400000,  17.900000]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Dachaland",
+                  description:
+                    "Agriculture by Climate <br>Resilience<br>Zelenogradskaya, Russia<br>DK-CM<br>",
+                    image:"https://freight.cargo.site/t/original/i/ec30a814d6aa9f2688a1dfd5148cf04bde062005d17f596d49635374eece8d5c/Dachaland.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':true,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 29.636469,  60.262937]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "KM 0 Restaurants",
+                  description:
+                    "Agriculture by Climate <br>Mitigation<br>Catalonia, Spain<br>Slow Food Community<br>",
+                    image:"https://freight.cargo.site/t/original/i/3210a8db1f471586fcd23dfe191036ed2cc16e562124730f381ce8c7b1340312/KM-0-restaurants-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':true,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  1.520862,  41.591159]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "The Land Institute",
+                  description:
+                    "Agriculture by Climate <br>Mitigation<br>Salinas, Kansas<br>The Land Institute<br>",
+                    image:"https://freight.cargo.site/t/original/i/13c8e5e52f30665671d91db95e67fc399b9454fe4b1b6d0f1ebcae8f6751608e/The-Land-Institute-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':true,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-97.611424,  38.840280]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Marin Carbon Project",
+                  description:
+                    "Agriculture by Climate <br>Resilience<br>Marin County, California<br>Marin Carbon Project<br>",
+                    image:"https://freight.cargo.site/t/original/i/6e68a82897bd0915c5ef243c62cf0feb586876411a29b941aeb807d1d98519c9/Marin-Carbon-Project4-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':true,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-122.763304, 38.083402]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Raine Island Recovery Project",
+                  description:
+                    "Soil Stabilization <br>Adaptation<br>Raine Island, Australia<br>Wuthathi Nation, Kemer Meriam Nation, Queensland Government, Great Barrier Reef Foundation<br>",
+                    image:"https://freight.cargo.site/t/original/i/2ee2fac2a0ee71e686be9c218bc613e9ae83a5c45531f9ccc690c1f19f5fe561/Raine-Island-Recovery-Project-2-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':true,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [144.035098, -11.590850]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Inform @ Risk",
+                  description:
+                    "Soil Stabilization <br>Resilience<br>Medellin, Colombia<br>Leibniz University in Hanover<br>",
+                    image:"https://freight.cargo.site/t/original/i/b01a1f96e7b8f897630567e81e23df67c2411cc6898c93ba4a0e4fb152ce5b30/Inform-at-Risk-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':true,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-75.565815,   6.247638]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Bamboo Stabilization Study",
+                  description:
+                    "Soil Stabilization <br>Resilience<br>Kathmandu, Nepal<br>University of Natural Resources Vienna, Tribhuvan University<br>",
+                    image:"https://freight.cargo.site/t/original/i/97bedd59d6f050726a39bc72d94e893aa6d0478ba915e122d54c59a089a0673a/Bamboo-Stabilization-Study.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':true,
+
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 85.323960,  27.717245]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Ashland Forest Resiliency Project",
+                  description:
+                    "Soil Stabilization <br>Resilience<br>Ashland, OR, USA<br>Lomakatsi Restoration Project<br>",
+                    image:"https://freight.cargo.site/t/original/i/a75e019859a9bdbdad667a4a9632e18bb4b693bd1a189865ab43f61bda78d82c/Ashland-Forest-Resiliency-Project2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':true,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-122.709477,  42.194576]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Galindez Slope and Pau Casals Square",
+                  description:
+                    "Soil Stabilization <br>Resilience<br>Bilbao, Spain<br>ACXT Architects<br>",
+                    image:"https://freight.cargo.site/t/original/i/8fa1ccae03b2ca5bb7de381c58f9eea1318de7c667ab06dad91b7493f9eb7bf7/Galindez-Slope-and-Pau-au-Casals-Square-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':true,
+
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -2.934985, 43.263013]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Max IV Laboratory Landscape",
+                  description:
+                    "Soil Stabilization <br>Mitigation<br>Lund, Sweden<br>Snohetta<br>",
+                    image:"https://freight.cargo.site/t/original/i/723a2d96c3fb4a150606ee0400b8899294de63aa3b9452b1439e1f08bf92a33e/Max-IV-Laboratory-Landscape.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':true,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 13.191008,  55.704660]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Clam Gardens Restoration Project",
+                  description:
+                    "Agriculture by Climate <br>Resilience<br>Gulf Islands National Park Reserve, Canada<br>Hul'q'umi'num Nation, WSANEC Nation, Parks Canada<br>",
+                    image:"https://freight.cargo.site/t/original/i/e37e48a7b2f2c9c819ee1a58d3b9affa007cd3180737dc32f706236801fa3d82/Clam-Garden-Restoration-Project-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':true,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                 
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-123.470432, 48.889288]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "4 per 1000 Initiative",
+                  description:
+                    "Soil Stabilization <br>Resilience<br>International Initiative<br>United Nations Convention on Climate Change<br>",
+                    image:"https://freight.cargo.site/t/original/i/9619d273b3a3b0909cc91a44b6e50f261db2d5d45192f506f45c576e29f6bd15/4-per-1000-Initiative-2.jpg", 
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':true,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 45.337377,  18.067918]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Pleistocene Park",
+                  description:
+                    "Soil Stabilization <br>Mitigation<br>Sakha Republic, Russia<br>Pleistocene Park Foundation<br>",
+                    image:"https://freight.cargo.site/t/original/i/69f2df3e5b1648adefc3a09fbcaed05cb74619f39898dcb53aff2b524a661836/Pleistocene-Park3-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':true,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 163.295060,  68.273729]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Crosby Arboretum",
+                  description:
+                    "Waste Reduction <br>Mitigation<br>Picayune, MS, USA<br>Ed Blake, Andropogon, Fay Jones, Bill Wolverton<br>",
+                    image:"https://freight.cargo.site/t/original/i/75dfef401500b1772326747cdc08bb59e49d0431262e1a771f477a389201eba1/Crosby-Arboretum-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':true,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-89.664770,  30.502889]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Plaza Ecopolis",
+                  description:
+                    "Waste Reduction<br>Mitigation<br>Rivas Vaciamadrid, Spain<br>Ecosistema Urbano<br>",
+                    image:"https://freight.cargo.site/t/original/i/f61c7e22b17eb2ce724f6da3540297695896ac22be6c0c157a5f2207a9dc80f2/Ecopolis-Plaza-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':true,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -3.514794,  40.329197]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "AMD&ART Park",
+                  description:
+                    "Waste Reduction <br>Mitigation<br>Vintondale, PA, USA<br>D.I.R.T Studio<br>",
+                    image:"https://freight.cargo.site/t/original/i/7311a17379742c5a2981867853a808648c775fbb71727b7e1ddfde79131a2099/AMD_ART-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':true,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -78.918638,  40.481459]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Unity Island Project",
+                  description:
+                    "Waste Reduction <br>Mitigation<br>Buffalo, NY, USA<br>USACE<br>",
+                    image:"https://freight.cargo.site/t/original/i/79af5f29801be5d5edd511ae251d5181a53d18e5e3ac0cab8ce23d7e6559c41d/Unity-Island-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':true,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -78.864695,  42.920666]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "East Kolkata Wetlands",
+                  description:
+                    "Waste Reduction <br>Mitigation<br>Kolkata, India<br>East Kolkata Wetlands Management Authority<br>",
+                    image:"https://freight.cargo.site/t/original/i/c36d49af3efe01db0c0b14890efeaed5246e49f48ba51040f8bd653fc855ca90/East-Kolkata-Wetlands.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':true,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  88.450079,  22.552841]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Daybreak Planned Community",
+                  description:
+                    "Waste Reduction <br>Mitigation<br>South Jordan, UT, USA<br>Calthorpe Associates, Ken Kay Associates, Loci, Urban Design Associates<br>",
+                    image:"https://freight.cargo.site/t/original/i/4d80de84a40cfa5897ec7607af283f8130d6168024e8f32697a0a92402cc17db/Daybreak-Planned-Community.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':true,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -111.929658,  40.562170]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Korea Zero Waste Movement Network",
+                  description:
+                    "Waste Reduction <br>Mitigation<br>Seoul, South Korea<br>Korea Zero Waste Movement Network, Consortium of NGOs<br>",
+                    image:"https://freight.cargo.site/t/original/i/94ef0f6e28c03defdfc8d89420e82ea1713f44d0ad11a6f0c81aa0715af7061d/Korea-Zero-Waste-Movement-Network-2-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':true,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 126.97796,  37.566535]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Freshkills Park",
+                  description:
+                    "Waste Reduction <br>Mitigation<br>Staten Island, NY, USA<br>James Corner Field Operatoin<br>",
+                    image:"https://freight.cargo.site/t/original/i/d559f360018a72a5ccc1dae929ffeef72f335a1382145bf4acb0c43fa80a49b9/Freshkills-Park-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':true,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -74.186255,  40.564271]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "States of Disassembly (Speculative)",
+                  description:
+                    "Waste reduction <br>Mitigation<br>Lateral Office<br>",
+                    image:"https://freight.cargo.site/t/original/i/fd46ce1c28c13510e01963cbe5f60b8779276982b4dfbf4abfe827ef47ad2f99/Uncommons_-States-of-Disassembly-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':true,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+          
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [126.780496,  37.518627]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Reciclo Organico",
+                  description:
+                    "Waste reduction <br>Mitigation<br>Chile<br>Canadian Government, Chilean Government, Arcadis<br>",
+                    image:"https://freight.cargo.site/t/original/i/9f7cf63cec356c001cd58b9c7fc386174c04440e2ffdd74cafbe8586efbc65db/Reciclicos-Organicos-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':true,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-71.588418,  -35.774730]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Save the Tidal Basin Ideas Lab",
+                  description:
+                    "Freshwater Flooding <br>Resilience<br>Washington, D.C., USA<br>Reed Hilderbrand, GGN, DLANDstudio, Hood Design Studio, James Corner Field Operations<br>",
+                    image:"https://freight.cargo.site/t/original/i/1c8387a72ffb6fdde45a73c85239645bb354fd5b54e8971759fa752f486ca1e5/Save-the-Tidal-Basins-Ideas-Lab2-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-77.0368718,   38.907192]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Parque Fluvial del Besos",
+                  description:
+                    "Freshwater Flooding <br>Resilience<br>Barcelona, Spain<br>Bert de Sola, Alberto Alarcon, Ferran Puig<br>",
+                    image:"https://freight.cargo.site/t/original/i/b1e6369ad940fde492a5322e0d93eee339fa6fb7f26cf4cdd9c2808da0600fea/Barcelona-Trees2-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  2.209284,  41.440155]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Room for the River",
+                  description:
+                    "Freshwater Flooding <br>Adaptation<br>Nijmegen, Netherlands<br>H+N+S Landscape Architects<br>",
+                    image:"https://freight.cargo.site/t/original/i/586720bd518d5ba5674da462a8aad45b51d3f2db37120edbcd5adb83e197202d/Room-for-the-River2-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  5.842828,  51.844884]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Luis Bunuel Zaragoza Water Park",
+                  description:
+                    "Freshwater Flooding<br>Resilience<br>Zaragoza, Spain<br>Iñaki Alday, Margarita Jover, Christine Dalnoky<br>",
+                    image:"https://freight.cargo.site/t/original/i/b3da124a859c528bd56741cd10fbed5ca345cfbba7394fb70fbf2f1ea0187662/Luis-Bunuel-Zaragoza-Water-Park3.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  -0.910656,   41.666287]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Copenhagen Cloudburst",
+                  description:
+                    "Freshwater Flooding <br>Resilience<br>Copenhagen, Denmark<br>City of Copenhagen<br>",
+                    image:"https://freight.cargo.site/t/original/i/e1aa3c984c266c15c9517d1332ddf9579ffb17d66261fa882ae0414a077fbce4/Copenhagen-Cloudburst-Plan-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  12.574835,  55.713887]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Benthemplein Water Square",
+                  description:
+                    "Freshwater Flooding <br>Resilience<br>Rotterdam, Netherlands<br>De Urbanisten<br>",
+                    image:"https://freight.cargo.site/t/original/i/fe43dc745e3222de63eb3752c7ef337f71da9fb11135e46bc7e6040df80e4011/Benthemplein-Water-Square-3.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  4.476596, 51.927777]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Chulalongkorn University Centenary Park",
+                  description:
+                    "Freshwater Flooding <br>Mitigation<br>Bangkok, Thailand<br>Landprocess<br>",
+                    image:"https://freight.cargo.site/t/original/i/1dcfb9c878fe0048ca492c93e98f12cb4ed11dc90a980c7472d4ea13cad9fb2c/Chulalongkorn-University-Centenary-Park4.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                    
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [100.523827, 13.739429]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Cedar Rapids Redevelopment",
+                  description:
+                    "Freshwater Flooding <br>Adaptation<br>Cedar Rapids, IA, USA<br>Sasaki Associates<br>",
+                    image:"https://freight.cargo.site/t/original/i/06e94bf1b13cbe0bd4134f56a30590e7e320694c106db3ce02219d53a9b1f3e5/Cedar-Rapids-River-Corridor-Redevelopment-Plan-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-91.665623, 41.977880]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Buffalo Bayou Park",
+                  description:
+                    "Freshwater Flooding <br>Resilience<br>Houston, TX, USA<br>SWA Group<br>",
+                    image:"https://freight.cargo.site/t/original/i/c42e67a9fd2b40cbd91d99b62fe2f31c76d06c22533ccd849935b83dff5893c5/Buffalo-Bayou-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-95.375620,  29.762954]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Wadi Hanifah Wetlands",
+                  description:
+                    "Freshwater Flooding<br>Adaptation<br>Riyadh, Saudi Arabia<br>Moriyama & Teshima Planners Ltd., Buro Happold<br>",
+                    image:"https://freight.cargo.site/t/original/i/b5a173c98d5394f28cd0a55a8991e791f5ee1c439771eb0278b62c60513b7cd9/Wadi-Hanifa-Wetlands-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 46.704987,   24.593378]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "River Aire",
+                  description:
+                    "Freshwater Flooding<br>Adaptation<br>Geneva, Switzerland<br>Atelier Descombes<br>",
+                    image:"https://freight.cargo.site/t/original/i/3f2e9c4a1e3b3fc4c36a037ed659e732e4bb58c58b90e24e72f480bbf491afe3/River-Aire2-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  6.143158,  46.204391]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Hurricane Matthew Disaster Recovery and Resilience Initiative",
+                  description:
+                    "Freshwater Flooding <br>Resilience<br>Columbus County, NC, USA<br>University of North Carolina, North Carolina State University<br>",
+                    image:"https://freight.cargo.site/t/original/i/69ac931ca520840dd5ed3b71cfbcbb144fd891f394be48db4466e2ca0073f37d/Hurricane-Matthew-Disaster-Recovery-Program-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':true,
+                     'arboriculture':false,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -79.019299,  35.759573]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Andes Afforestation Project",
+                  description:
+                    "Arboriculture<br>Mitigation<br>Argentina, Bolivia, Chile, Colombia, Ecuador, Peru<br>Acción Andina<br>",
+                    image:"https://freight.cargo.site/t/original/i/4f93e31d16c532e0dfa7b58f2669d9e618a97d418df13f3edb9e31b800c9c7ef/Andes-Afforestation-Project-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -66.775212, -21.160724]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Three North Shelter Forest",
+                  description:
+                    "Arboriculture<br>Mitigation<br>Northern, northwestern and northeastern China<br>Chinese Communist Party Government<br>",
+                    image:"https://freight.cargo.site/t/original/i/c2f6071dfbb08c08650f7b6692ca9cc3f8bcea224b9e3f912be153dd919e637d/Three-North-Shelter-Forest-Program-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 104.045494, 35.606028]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Great Green Wall",
+                  description:
+                    "Arboriculture <br>Mitigation<br>North Africa, the Sahel, and the Horn (Senegal, Mauritania, Mali, Burkina Faso, Niger, Nigeria, Chad, Sudan, Eritrea, Ethopia, Djibouti)<br>",
+                    image:"https://freight.cargo.site/t/original/i/203d16b38b3639f8ba254dfba9b2c159ba223225bac8dc0e8b928e5c581f2283/The-Great-Green-Wall4.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -1.561593,  12.238333]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Flash Forest",
+                  description:
+                    "Arboriculture<br>Mitigation<br>Ontario, Canada<br>Flash Forest<br>",
+                    image:"https://freight.cargo.site/t/original/i/57e39e8fe50563443817fec52ab746520ea3d2ae47a2e660d6e2b216eb191ea1/Flash-Forest.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -84.986828, 50.935307]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Oerliker Park",
+                  description:
+                    "Arboriculture<br>Mitigation<br>Zurich, Switzerland<br>Studio Vulkan<br>",
+                    image:"https://freight.cargo.site/t/original/i/a13730f947844d853ef507c9f2d243022e1fa71c1965035303ef933175f9398b/Oerliker-Park-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [   8.538818,  47.414676]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Beijing Olympic Forest Park",
+                  description:
+                    "Arboriculture<br>Mitigation<br>Beijing, China<br>Beijing Tsinghua Urban Planning Design Institute, Sasaki Associates<br>",
+                    image:"https://freight.cargo.site/t/original/i/ae2865f101d7649df28db937f0a8945050c85b3ccab0d188e73ab943a55a3b18/Beijing-Olympic-Forest-Park-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 116.391679,  40.017309]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Barcelona Trees",
+                  description:
+                    "Arboriculture<br>Mitigation<br>Barcelona, Spain<br>City of Barcelona<br>",
+                    image:"https://freight.cargo.site/t/original/i/273fe0392450ba4b84d750a0a6625bf5e6f0f18d838d2bf99b11b560abf57b2d/TreePeople3-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [   2.173403,  41.385064]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Azuero Earth Project",
+                  description:
+                    "Arboriculture<br>Mitigation<br>Pedasi, Panama<br>Association of Livestock and Agro-Silvopastoral Producers of Pedasi<br>",
+                    image:"https://freight.cargo.site/t/original/i/a77ea6e90b63d70875419e30a43fb5d639064fd895db57939223afbe61aa398d/Azuero-Earth-Project-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -80.583333,    7.666667]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Afforestt",
+                  description:
+                    "Arboriculture<br>Mitigation<br>India, Asia<br>Afforest<br>",
+                    image:"https://freight.cargo.site/t/original/i/369cda8b9a57e0c6f791df16a334ef95be3dc9d6d86cd9d6a03d92af6edabe9b/Afforestt-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 78.962884,   20.593688]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Billion Tree Tsunami",
+                  description:
+                    "Arboriculture<br>Mitigation<br>Khyber Pakhtunkhwa, Pakistan<br>Imran Khan, Khyber Pakthunkhwa Government<br>",
+                    image:"https://freight.cargo.site/t/original/i/389c9dab87fe3ed96ae560d1a5029e8fb0570a8218db5d4111000fbeb1205250/Billion-Tree-Tsunami3.jpg", 
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 72.331113,   34.952621]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Paris Landmark Urban Forests",
+                  description:
+                    "Arboriculture<br>Mitigation<br>Paris, France<br>ARUP<br>",
+                    image:"https://freight.cargo.site/t/original/i/7aac896af139acf9af07dd02d0fe1979848178621fd4c54dbff968c47ad6bdec/Paris-Landmark-Urban-Forests2-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  2.352222,   48.856614]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Tree People",
+                  description:
+                    "Arboriculture<br>Mitigation<br>Los Angeles, USA<br>TreePeople<br>",
+                    image:"https://freight.cargo.site/t/original/i/273fe0392450ba4b84d750a0a6625bf5e6f0f18d838d2bf99b11b560abf57b2d/TreePeople3-2.jpg",
+
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -118.020617,  33.758060]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Jarrah Forest Bauxite Mining",
+                  description:
+                    "Arboriculture<br>Resilience<br>Jarrahdale, Australia<br>Alcoa World Alumina<br>",
+                    image:"https://freight.cargo.site/t/original/i/189a56ba05a431e8511d4ca4c1b7084bc3ceb109934fba114a27c18beceefa3c/Jarrah-Forest-Bauxite-Mining-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 116.069544,-32.337187]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Chagga Homegardens",
+                  description:
+                    "Arboriculture<br>Resilience<br>Mount Kilimanjaro, Ethiopia<br>Skilled local farmers<br>",
+                    image:"https://freight.cargo.site/t/original/i/b54321a2678da4a9db5d111babd8b8ac7966781de7d63bc3055ee1ec54689a68/Chagga-Homegardens-3-2.jpg",
+                    resilience:true,
+                     adaptation:false,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':true,
+                     'low carbon urbanization':false,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 37.331586, -3.143519]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Masdar City",
+                  description:
+                    "Low Carbon Urbanization <br>Mitigation<br>Abu Dhabi, UAE<br>Foster + Partners<br>",
+                    image:"https://freight.cargo.site/t/original/i/2724b1927f714076695d74976095ab11f14016f341fdadc7bc0d2c45f37a2a93/Masdar-City3-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  54.614979,  24.426673]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Hammarby Sjostad Sustainable Urban District",
+                  description:
+                    "Low Carbon Urbanization <br>Mitigation<br>Stockholm, Sweden<br>Stockholm Water Company<br>",
+                    image:"https://freight.cargo.site/t/original/i/03a1453a1c3f9e72c8e97f54caaae9c0720872a2b1e681abc75c01bcf1786dcb/Hammarby-Sjstad.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [   18.108808,  59.305019]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Two Rivers Urban Park",
+                  description:
+                    "Low Carbon Urbanization <br>Mitigation<br>Capetown, South Africa<br>",
+                    image:"https://freight.cargo.site/t/original/i/4a483ac030c13afc824a5da5530832eda0f3a2bc1778cc918722ef89a11f0543/Two-rivers-urban-park.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [   18.108808,  59.305019]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "The Ray",
+                  description:
+                    "Low Carbon Urbanization <br>Mitigation<br>West Point, Georgia, USA<br>The Ray<br>",
+                    image:"https://freight.cargo.site/t/original/i/7316a4c7d69eb232ed4d8cb6737cedc1db30b359980f1ff3de3117bf1ea38a3c/The-Ray-I-852.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -85.103022,  33.572046]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Hafencity",
+                  description:
+                    "Low Carbon Urbanization <br>Mitigation<br>Hamburg, Germany<br>ASTOC Architects and Planners and KCAP Architects & Planners<br>",
+                    image:"https://freight.cargo.site/t/original/i/89e8d4f051d157e050f1b1ee6f51de7c8cdf66c77408a0787ff2e9bf6387d813/Hafen-City-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [  9.993682, 53.551085]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "The Hills at Vallco",
+                  description:
+                    "Low Carbon Urbanization <br>Adaptation<br>Cupertino, USA<br>OLIN, Rafael Vinoly<br>",
+                    image:"https://freight.cargo.site/t/original/i/659ca9879280df7044ba54fb58d1ef94e4715c11da8de5a71582562665c4e236/The-Hills-at-Vallco2-2.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -122.032182, 37.322998]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Sydney Olympic Park",
+                  description:
+                    "Low Carbon Urbanization <br>Mitigation<br>Sydney, Australia<br>Sydney Olympic Park Authority, PWP, Hargreaves Jones<br>",
+                    image:"https://freight.cargo.site/t/original/i/484b00dbf18013181dbb163da576106d40673e1075ad57480622057a4eafe0be/Sydney-Olympic-Park-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ 151.072214,-33.846509]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Transmilenio and Bikeways",
+                  description:
+                    "Low Carbon Urbanization <br>Mitigation<br>Bogotá, Colombia<br>City of Bogotá<br>",
+                    image:"https://freight.cargo.site/t/original/i/c2e34b56b1c18150a5036258004262c2b3693f2907c85c26e4d02b795621d6b1/Transmilenio-and-Bikeways.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-74.072092,  4.710989]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "The Green New Deal",
+                  description:
+                    "Low Carbon Urbanization <br>Mitigation<br>USA<br>Alexandria Ocasio-Cortez, Edward Markey, Others<br>",
+                    image:"https://freight.cargo.site/t/original/i/7f5ecebaaf3c33974f3eca72526ed0516a37f0d044ca885f36b6ab38cc4f5763/The-Green-New-Deal3-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-95.712895,  37.090238]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "T.E.J.A.S.",
+                  description:
+                    "Low Carbon Urbanization <br>Mitigation<br>Houston, Texas, USA<br>Juan Parras et al.<br>",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-95.369803, 29.760427]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Solar Strand",
+                  description:
+                    "Low Carbon Urbanization <br>Mitigation<br>Buffalo, New York, USA<br>Hood Design Studio<br>",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-78.878369, 42.886447]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Swansea Bay Tidal Lagoon",
+                  description:
+                    "Low Carbon Urbanization <br>Mitigation<br>Swansea, United Kingdom<br>LDA Design<br>",
+                    image:"https://freight.cargo.site/t/original/i/2e24b0c19d4ec1a9d3225d373633f455a209a9cb4349dd0aa8c7b68470a820c6/Swansea-Bay-Tidal-Lagoon-2.jpg",
+                    resilience:false,
+                     adaptation:false,
+                     mitigation:true,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [ -3.943646, 51.621440]
+                }
+              },
+              {
+                type: "Feature",
+                properties: {
+                  title: "Sunset Park GRID",
+                  description:
+                    "Low Carbon Urbanization <br>Adaptation<br>New York City, USA<br>Collective for Community Culture and Environment<br>",
+                    image:"https://freight.cargo.site/t/original/i/3b1b6a4a9f7c3fe27093e6256f7e1b492b7e99e3a37855ed5e7c513082d32ef2/Sunset-Park.jpg",
+                    resilience:false,
+                     adaptation:true,
+                     mitigation:false,
+                     'coastal lands': false,
+                     'water conservation':false,
+                     'agriculture by climate':false,
+                     'waste reduction':false,
+                     'freshwater flooding':false,
+                     'arboriculture':false,
+                     'low carbon urbanization':true,
+                     'soil stabilization':false,
+
+
+
+                  
+                },
+                geometry: {
+                  type: "Point",
+                  coordinates: [-73.888291,40.566725]
+                }
+              }
+        ]
+    }
+
+
+	mapboxgl.accessToken = 'pk.eyJ1IjoiY2xpbWF0ZWJ5ZGVzaWduIiwiYSI6ImNrY2IzMGN3bzBwbGwzNHFrcnQzd3FqbDUifQ.R7mvCZX1b9Zch9_aM8cMrw';
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/climatebydesign/ckctgik040vvh1ho1hze97sit',
+        zoom: 1.5,
+        center: [32.529831, 15.564836]
+    });
+  
+    map.on('load', function() {
+        // add source and layer for coastal
+        map.addSource('sea surface temperature', {
+            type: 'vector',
+            url: 'mapbox://climatebydesign.7sl9go83'
+        });
+        map.addLayer({
+            'id': 'sea surface temperature',
+            'type': 'fill',
+            'source': 'sea surface temperature',
+            'layout': {
+                // make layer visible by default
+                'visibility': 'visible',
+                
+            },
+            'paint': {
+                'fill-color': '#169793',
+                'fill-opacity': 0.03
+            },
+            'source-layer': '123-3o17ze'
+        });
+    
+        map.addSource('population density', {
+            type: 'raster',
+            url: 'mapbox://climatebydesign.5ohfv5ag'
+        });
+        map.addLayer({
+            'id': 'population density',
+            'type': 'raster',
+            'source': 'population density',
+            'source-layer': 'tiff2-b9r7a0',
+            
+      
+        
+        });
+
+        
+    
+
+        
+
+        // add source and layer for inland
+        map.addSource('inland flooding', {
+            type: 'raster',
+            url: 'mapbox://climatebydesign.9qbevdcs'
+        });
+        map.addLayer({
+            'id': 'inland flooding',
+            'type': 'raster',
+            'source': 'inland flooding',
+            'source-layer': 'tif10-5t1hjq',
+            
+             
+                                          
+                            
+      
+        
+        });
+        
+
+        // add source and layer for water
+        map.addSource('drought', {
+            type: 'vector',
+            url: 'mapbox://climatebydesign.b4qwpxj9'
+        });
+        map.addLayer({
+            'id': 'drought',
+            'type': 'fill',
+            'source': 'drought',
+            'source-layer': '456-4ehb8v',
+            'layout': {
+                // make layer visible by default
+                'visibility': 'visible',
+             
+                
+            },
+            'paint': {
+                'fill-color': '#E77656',
+                'fill-opacity': 0.5
+                
+            }
+          });
+        
+          map.addSource('gdp', {
+            type: 'vector',
+            url: 'mapbox://climatebydesign.5roautok'
+        });
+        map.addLayer({
+            'id': 'gdp',
+            'type': 'fill',
+            'source': 'gdp',
+            'source-layer': 'Export_Output_2-5epzkm',
+            'layout': {
+                // make layer visible by default
+                'visibility': 'visible',
+             
+                
+            },
+            'paint': {
+                'fill-color': '#33FF68',
+                'fill-opacity': 0.5
+                
+            }
+        });
+        map.addSource('forest cover', {
+            type: 'raster',
+            url: 'mapbox://climatebydesign.98merilu'
+        });
+        map.addLayer({
+            'id': 'forest cover',
+            'type': 'raster',
+            'source': 'forest cover',
+            'source-layer': 'tif9-adgonv',
+            'paint': {
+              'raster-opacity':0.6,
+             
+            
+             
+                
+            
+            }
+            
+            
+            
+                
+            
+        });
+        map.addSource('soil', {
+            type: 'raster',
+            url: 'mapbox://climatebydesign.2dnai58x'
+        });
+        map.addLayer({
+            'id': 'soil',
+            'type': 'raster',
+            'source': 'soil',
+            'source-layer': 'tiff_-_Band_11-0jjcif',
+            'paint': {
+              'raster-opacity':0.5,
+            
+                
+            }
+                        });
+        map.addSource('hurricane', {
+            type: 'vector',
+            url: 'mapbox://climatebydesign.08lsyv6l'
+        });
+               
+        map.addLayer({
+            'id': 'hurricane',
+            'type': 'line',
+            'source': 'hurricane',
+            'source-layer': 'IBTrACS-arb9rw',
+            'paint': {
+              'line-opacity':0.8,
+              'line-color':'#FFFFFF',
+              'line-width':1.5
+                
+                
+            
+            }
+          
+                                        
+                      
+      
+                });
+     
+        map.addSource('slope', {
+            type: 'raster',
+            url: 'mapbox://climatebydesign.20lcp7od'
+        });
+        map.addLayer({
+            'id': 'slope',
+            'type': 'raster',
+            'source': 'slope',
+            'source-layer': 'Reclass_Slop12-d4vb28',
+            'paint': {
+                'raster-opacity': 0.1,
+                
+                
+                
+                
+            
+            }
+            
+            
+           
+      
+        
+    
+           
+      
+        
+    
+      
+        
+        });
+    });
+
+
+
+    places.features.forEach(function(feature) {
+          var symbol = feature.properties['id'];
+          var layerID = 'poi-' + symbol;
+    });
+
+   
+           
+    map.on('load', function() {
+        // add source and layer for coastal
+        map.addSource('places', {
+            type: 'geojson',
+            data: places
+        });
+      
+       
+        map.addLayer({
+            'id': 'sea surface temperature',
+            'type': 'symbol',
+            'source': 'places',
+            'layout': {
+                // make layer visible by default
+                'visibility': 'visible'
+                
+            }
+        });
+        map.addSource('population density', {
+            type: 'raster',
+            url: 'mapbox://climatebydesign.5ohfv5ag'
+        });
+        map.addLayer({
+            'id': 'population density',
+            'type': 'raster',
+            'source': 'population density',
+            'source-layer': 'tiff2-b9r7a0',
+          });
+            
+        
+
+        
+
+        // add source and layer for inland
+        map.addSource('inland flooding', {
+            type: 'raster',
+            url: 'mapbox://climatebydesign.9qbevdcs'
+        });
+        map.addLayer({
+            'id': 'inland flooding',
+            'type': 'raster',
+            'source': 'inland flooding',
+            'source-layer': 'tif10-5t1hjq',
+            
+             
+            
+             
+       
+            
+        
+          
+             
+        
+        });
+        
+
+        // add source and layer for water
+        map.addSource('drought', {
+            type: 'vector',
+            url: 'mapbox://climatebydesign.b4qwpxj9'
+        });
+        map.addLayer({
+            'id': 'drought',
+            'type': 'fill',
+            'source': 'drought',
+            'source-layer': '456-4ehb8v',
+            'layout': {
+                // make layer visible by default
+                'visibility': 'visible',
+             
+                
+            },
+            'paint': {
+                'fill-color': '#E77656',
+                'fill-opacity': 0.5
+                
+            }
+        });
+        map.addSource('soil', {
+            type: 'raster',
+            url: 'mapbox://climatebydesign.2dnai58x'
+        });
+        map.addLayer({
+            'id': 'soil',
+            'type': 'raster',
+            'source': 'soil',
+            'source-layer': 'tiff_-_Band_11-0jjcif',
+            'paint': {
+              'raster-opacity':0.5,
+            
+                
+                
+                        }
+                
+    });
+        map.addSource('forest cover', {
+            type: 'raster',
+            url: 'mapbox://climatebydesign.98merilu'
+        });
+        map.addLayer({
+            'id': 'forest cover',
+            'type': 'raster',
+            'source': 'forest cover',
+            'source-layer': 'tif9-adgonv',
+            'paint': {
+              'raster-opacity':0.6,
+            
+                
+                
+                        }
+            
+            
+                
+            
+        });
+        map.addSource('gdp', {
+            type: 'vector',
+            url: 'mapbox://climatebydesign.5roautok'
+        });
+        map.addLayer({
+            'id': 'gdp',
+            'type': 'fill',
+            'source': 'gdp',
+            'source-layer': 'Export_Output_2-5epzkm',
+            'layout': {
+                // make layer visible by default
+                'visibility': 'visible',
+             
+                
+            },
+            'paint': {
+                'fill-color': '#33FF68',
+                'fill-opacity': 0.5
+                
+            }
+        });
+        map.addSource('hurricane', {
+            type: 'vector',
+            url: 'mapbox://climatebydesign.08lsyv6l'
+        });
+               
+        map.addLayer({
+            'id': 'hurricane',
+            'type': 'line',
+            'source': 'hurricane',
+            'source-layer': 'IBTrACS-arb9rw',
+            'paint': {
+              'line-opacity':0.8,
+              'line-color':'#FFFFFF',
+              'line-width':1.5
+                
+            
+            }
+          
+                                        
+                      
+      
+                });
+        map.addSource('slope', {
+            type: 'raster',
+            url: 'mapbox://climatebydesign.20lcp7od'
+        });
+        map.addLayer({
+            'id': 'slope',
+            'type': 'raster',
+            'source': 'slope',
+            'source-layer': 'Reclass_Slop12-d4vb28',
+            'paint': {
+                'raster-opacity': 0.1,
+                
+            
+            }
+                                        
+                      
+      
+                });
+                
+    });
+
+
+    // enumerate ids of the layers
+    var toggleableLayerIds = ['sea surface temperature' , 'drought', 'inland flooding','slope','population density','gdp','forest cover','hurricane','soil'];
+
+    // set up the corresponding toggle button for each layer
+    for (var i = 0; i < toggleableLayerIds.length; i++) {
+        var id = toggleableLayerIds[i];
+
+        var link = document.createElement('a');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function(e) {
+            var clickedLayer = this.textContent;
+            e.preventDefault();
+            e.stopPropagation();
+
+            var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+            // toggle layer visibility by changing the layout object's visibility property
+            if (visibility === 'visible') {
+                map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+                this.className = '';
+            } else {
+                this.className = 'active';
+                map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+            }
+        };
+ 
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+    }
+
+      // add markers to map
+      const myMarkers = places.features.map(function(marker) {
+        // create a HTML element for each feature
+        var el = document.createElement("div");
+        el.className = "marker1";
+
+        // make a marker for each feature and add to the map
+        let myMarker = new mapboxgl.Marker(el)
+          .setLngLat(marker.geometry.coordinates)
+          .setPopup(
+            new mapboxgl.Popup({ offset: 25 }) // add popups
+              .setHTML(
+                "<h3>" +
+                  marker.properties.title +
+                  "</h3><p>" +
+                  marker.properties.description +
+                  "</p>"+
+                  "<p><img src='"+ marker.properties.image+"'  width:200 height=110 /></p>")
+
+          )
+          .addTo(map);
+      myMarker.properties = marker.properties;
+      return myMarker;
+      });
+
+  $('#menu a').on('click', function(event) {
+    const isActive = this.className === 'active';
+    if (isActive) {
+      this.className = '';
+    } else {
+      this.className = 'active';
+    }
+    const filterText = event.target.text;
+    myMarkers.forEach(function(marker) {
+      if (isActive && marker.properties[filterText]) {
+        marker.addTo(map);
+      } else {
+        marker.remove()
+      };
+    });
+  });
+
+
+</script>
+
+</body>
+</html>
